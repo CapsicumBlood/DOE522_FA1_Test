@@ -1,7 +1,6 @@
 name: CI/CD Pipeline
 
 on:
-  pull_request:
   push:
     branches:
       - main
@@ -64,24 +63,3 @@ jobs:
 
     - name: Deploy to staging environment
       run: npm run deploy
-
-  # Add a failure notification step
-  notify_failure:
-    needs: [build, test, deploy]
-    runs-on: ubuntu-latest
-
-    steps:
-    - name: Notify on failure
-      if: ${{ failure() }}
-      uses: actions/github-script@v6
-      with:
-        script: |
-          const failureMessage = `❌ Workflow failed on ${github.repository}!`;
-          github.issues.create({
-            owner: context.repo.owner,
-            repo: context.repo.repo,
-            title: failureMessage,
-            body: failureMessage,
-            labels: ['notification']
-          });
- 
